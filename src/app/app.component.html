@@ -1,25 +1,22 @@
-
-
 <mat-toolbar color="primary">
   <!-- Main Button -->
   <button mat-button routerLink="/">Electron Snip</button>
 
-  <!-- Spacer to push other buttons to the right -->
-  <!-- <span class="spacer"></span> -->
-
   <!-- Settings Button -->
-  <button mat-icon-button routerLink="/settings">
+  <button mat-button>
     <mat-icon>tune</mat-icon>
+    Settings
   </button>
-  <span>Settings</span>
 
   <!-- About Button -->
-  <button mat-icon-button routerLink="/about">
+  <button mat-button>
     <mat-icon>help_outline</mat-icon>
+    About
   </button>
-  <span>About</span>
 </mat-toolbar>
 
-
-
-<router-outlet />
+<!-- Main Content -->
+<div class="main-content">
+  <mat-icon class="main-icon">photo_camera</mat-icon>
+  <div class="app-title">Electron Snip</div>
+</div>

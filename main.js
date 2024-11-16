@@ -9,6 +9,8 @@ const createWindow = () => {
       preload: path.join(__dirname, 'preload.js')
     },
     frame: false,
+    // titleBarStyle: 'customButtonsOnHover',
+    transparent: true,
   });
 
   if (process.env.DEBUG) {

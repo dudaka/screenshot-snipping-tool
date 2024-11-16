@@ -8,5 +8,29 @@ mat-toolbar {
 }
 
 mat-icon {
-  margin-right: 4px; /* Adjust spacing between icon and text */
+  margin-right: 4px; /* Adjust spacing between icons and text */
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 64px); /* Adjust height based on toolbar */
+  // background-color: #2d2d2d; /* Match the dark background color */
+  color: white;
+}
+
+.main-icon {
+  font-size: 240px; /* Increased size for visibility */
+  color: white;
+  // margin-bottom: 16px; /* Space between icon and title */
+  height: auto;
+  width: auto;
+}
+
+.app-title {
+  font-size: 36px;
+  // font-weight: bold;
+  text-align: center;
 }
