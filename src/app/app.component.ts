@@ -12,4 +12,8 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class AppComponent {
   title = 'Angular Electron';
+
+  onSnipClick() {
+    console.log('Snip clicked');
+  }
 }
