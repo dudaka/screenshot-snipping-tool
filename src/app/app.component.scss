@@ -1,0 +1,12 @@
+.spacer {
+  flex: 1 1 auto;
+}
+
+mat-toolbar {
+  display: flex;
+  align-items: center;
+}
+
+mat-icon {
+  margin-right: 4px; /* Adjust spacing between icon and text */
+}
