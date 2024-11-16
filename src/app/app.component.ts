@@ -14,6 +14,6 @@ export class AppComponent {
   title = 'Angular Electron';
 
   onSnipClick() {
-    console.log('Snip clicked');
+    console.log('todo: making screenshot');
   }
 }
