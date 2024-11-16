@@ -1,4 +1,4 @@
-# New Angular Electron Project Template
+# Screenshot Snipping Tool
 
 
 Open a terminal
