@@ -1,5 +1,6 @@
-const { app, BrowserWindow } = require('electron');
-const path = require('node:path')
+const { app, BrowserWindow, ipcMain, desktopCapturer } = require('electron');
+const path = require('node:path');
+
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -36,4 +37,9 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') 
         app.quit()
+});
+
+// Handle screen capture requests
+ipcMain.handle('get-sources', async (event, opts) => {
+  return await desktopCapturer.getSources(opts);
 });

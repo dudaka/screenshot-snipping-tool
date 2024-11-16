@@ -13,7 +13,19 @@ import { MatIconModule } from '@angular/material/icon';
 export class AppComponent {
   title = 'Angular Electron';
 
-  onSnipClick() {
-    console.log('todo: making screenshot');
+  async onSnipClick() {
+    try {
+      const sources = await window.electronAPI.getSources({
+        types: ['screen'],
+      });
+      const entireScreenSource = sources.find(
+        (source: any) => source.name === 'Screen 1'
+      );
+      if (entireScreenSource) {
+        console.log(entireScreenSource);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
