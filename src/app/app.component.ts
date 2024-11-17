@@ -13,19 +13,21 @@ import { MatIconModule } from '@angular/material/icon';
 export class AppComponent {
   title = 'Angular Electron';
 
-  async onSnipClick() {
-    try {
-      const sources = await window.electronAPI.getSources({
-        types: ['screen'],
-      });
-      const entireScreenSource = sources.find(
-        (source: any) => source.name === 'Screen 1'
-      );
-      if (entireScreenSource) {
-        console.log(entireScreenSource);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  onSnipClick() {
+    const screenSize = {
+      width: window.screen.width,
+      height: window.screen.height,
+    };
+    // const maxDimension = Math.max(screenSize.width, screenSize.height);
+
+    window.electronAPI.captureScreen({
+      // types: ['screen'],
+      // thumbnailSize: {
+      //   width: maxDimension * window.devicePixelRatio,
+      //   height: maxDimension * window.devicePixelRatio,
+      // },
+      screenSize,
+      devicePixelRatio: window.devicePixelRatio,
+    });
   }
 }

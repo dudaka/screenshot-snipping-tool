@@ -1,5 +1,8 @@
-const { app, BrowserWindow, ipcMain, desktopCapturer } = require('electron');
+const { app, BrowserWindow, ipcMain, desktopCapturer, shell, screen } = require('electron');
 const path = require('node:path');
+const os = require('os');
+const fs = require('fs');
+const { log } = require('node:console');
 
 
 const createWindow = () => {
@@ -40,6 +43,55 @@ app.on('window-all-closed', () => {
 });
 
 // Handle screen capture requests
-ipcMain.handle('get-sources', async (event, opts) => {
-  return await desktopCapturer.getSources(opts);
+ipcMain.handle('screen-capture', async (event, opts) => {
+  try {
+    const win = BrowserWindow.getFocusedWindow();
+    if (!win) {
+      throw new Error('No focused window found.');
+    }
+
+    win.hide();
+
+    const { devicePixelRatio } = opts;
+    const screenSize = screen.getPrimaryDisplay().workAreaSize
+
+    const sources = await desktopCapturer.getSources({
+      types: ['screen'],
+      thumbnailSize: {
+        width: screenSize.width * devicePixelRatio,
+        height: screenSize.height * devicePixelRatio,
+      },
+    });
+
+    const entireScreenSource = sources.find((source) => source.name === 'Entire Screen' || source.name === 'Screen 1');
+    if (entireScreenSource) {
+      const outputPath = path.join(os.tmpdir(), 'screenshot.png');
+      console.log('Saving screenshot to', outputPath);
+
+      const imageBuffer = entireScreenSource.thumbnail
+        .resize({
+          width: screenSize.width,
+          height: screenSize.height,
+        })
+        .crop(win.getBounds())
+        .toPNG();
+
+      
+      fs.writeFile(outputPath, imageBuffer, (err) => {
+        win.show();
+        
+        if (err) {
+          throw err;
+        }
+        shell.openExternal(`file://${outputPath}`);
+      });
+    } else {
+      throw new Error('Screen source not found.');
+    }
+
+  } 
+  catch (err) {
+    console.error(err);
+    // throw err;
+  }
 });
