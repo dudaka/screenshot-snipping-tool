@@ -1,8 +1,7 @@
-const { app, BrowserWindow, ipcMain, desktopCapturer, shell, screen } = require('electron');
+const { app, BrowserWindow, ipcMain, desktopCapturer, shell, screen, Menu, Tray } = require('electron');
 const path = require('node:path');
 const os = require('os');
 const fs = require('fs');
-const { log } = require('node:console');
 
 
 const createWindow = () => {
@@ -17,6 +16,8 @@ const createWindow = () => {
     transparent: true,
   });
 
+  win.hide();
+
   if (process.env.DEBUG) {
     win.loadURL('http://localhost:4200');
   } else {
@@ -28,6 +29,7 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
+  createTray();
   createWindow()
 
   app.on('activate', () => {
@@ -42,6 +44,38 @@ app.on('window-all-closed', () => {
         app.quit()
 });
 
+function createTray() {
+  const tray = new Tray(path.join(__dirname, 'assets', 'icon.png'));
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Show',
+      type: 'normal',
+      click: () => {
+        const win = BrowserWindow.getAllWindows()[0];
+        console.log('Show:', win);
+        
+        if (win) {
+          win.show();
+        }
+      },
+    },
+    {
+      label: 'Quit',
+      type: 'normal',
+      click: () => app.quit(),
+    },
+  ]);
+
+  tray.setToolTip('Screenshot Snipping Tool');
+  tray.setContextMenu(contextMenu);
+  // tray.on('click', () => {
+  //   const win = BrowserWindow.getFocusedWindow();
+  //   if (win) {
+  //     win.show();
+  //   }
+  // });
+}
+
 // Handle screen capture requests
 ipcMain.handle('screen-capture', async (event, opts) => {
   try {
@@ -53,7 +87,9 @@ ipcMain.handle('screen-capture', async (event, opts) => {
     win.hide();
 
     const { devicePixelRatio } = opts;
-    const screenSize = screen.getPrimaryDisplay().workAreaSize
+    const screenSize = screen.getPrimaryDisplay().workAreaSize;
+    // console.log('Test:', screen.getDisplayMatching(win.getBounds()));
+    
 
     const sources = await desktopCapturer.getSources({
       types: ['screen'],
@@ -63,8 +99,12 @@ ipcMain.handle('screen-capture', async (event, opts) => {
       },
     });
 
+    // console.log('Sources:', sources);
+
     const entireScreenSource = sources.find((source) => source.name === 'Entire Screen' || source.name === 'Screen 1');
     if (entireScreenSource) {
+      // console.log('Screen source found:', entireScreenSource.thumbnail.isEmpty());
+      
       const outputPath = path.join(os.tmpdir(), 'screenshot.png');
       console.log('Saving screenshot to', outputPath);
 
