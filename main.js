@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, desktopCapturer, shell, screen, Menu, Tray } = require('electron');
+const { app, BrowserWindow, ipcMain, desktopCapturer, shell, screen, Menu, Tray, globalShortcut } = require('electron');
 const path = require('node:path');
 const os = require('os');
 const fs = require('fs');
@@ -32,6 +32,13 @@ app.whenReady().then(() => {
   createTray();
   createWindow()
 
+  globalShortcut.register('CommandOrControl+Alt+Shift+S', () => {
+    const win = BrowserWindow.getAllWindows()[0];
+    if (win) {
+      win.show();
+    }
+  });
+
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow()
@@ -52,7 +59,7 @@ function createTray() {
       type: 'normal',
       click: () => {
         const win = BrowserWindow.getAllWindows()[0];
-        console.log('Show:', win);
+        // console.log('Show:', win);
         
         if (win) {
           win.show();
@@ -118,7 +125,7 @@ ipcMain.handle('screen-capture', async (event, opts) => {
 
       
       fs.writeFile(outputPath, imageBuffer, (err) => {
-        win.show();
+        // win.show();
         
         if (err) {
           throw err;
@@ -135,3 +142,5 @@ ipcMain.handle('screen-capture', async (event, opts) => {
     // throw err;
   }
 });
+
+
